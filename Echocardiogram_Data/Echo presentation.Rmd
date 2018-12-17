@@ -119,21 +119,6 @@ Gave test results for all variables
 
 ---
 
-#Generate New Plots
-
-```
-LV_Sys_Vol_Sept <- ggplot(new_echo_r, aes(x = Genotype, y = LV_Vol_s)) + geom_violin() + theme_bw() + 
-  ylab("Left Ventricular Systolic Volume (uL)") + 
-  scale_x_discrete(limits = c("Wild_Type", "Mutant"), label = c("Wild Type", "Mutant")) +
-  ggtitle("September 2018 Systolic Volume Variation") + 
-  theme(plot.title = element_text(hjust = 0.5)) +
-  stat_summary(fun.y = mean, geom="point", shape = 18, size  = 3) + 
-  stat_summary(fun.y = median,  geom = "point", shape = 3, size = 3, color = "blue")
-LV_Sys_Vol_Sept
-```
-
----
-
 #Final Plots
 
 Mess with plot and generate final version:
@@ -165,8 +150,9 @@ LV_Sys_Vol_Sept_2
 ---
 
 ```{r}
-# All defaults
-include_graphics(img1_path)
+knitr::include_graphics('/Users/Jacob/Documents/my_project/june sys vol.png')
+knitr::include_graphics('/Users/Jacob/Documents/my_project/sept sys volume.png')
+
 ```
 
 ---
@@ -182,6 +168,7 @@ Now we're working with them for the next step in our project
 #Acknowledgements
 
 Thank you to Dr. Dasgupta!
+
 - Helped with troubleshooting and plot generation
 
 Thank you!
