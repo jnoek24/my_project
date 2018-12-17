@@ -3,9 +3,12 @@ title: "Echocardiogram Presentation"
 author: "Jacob Noeker"
 date: "December 18, 2018"
 output:
-  slidy_presentation: default
-  theme: default
+  slidy_presentation:
+    theme: darkly
+  
 ---
+
+#Echocardiography Data
 
 Generated echocardiography data on the mice we were using
 
@@ -19,7 +22,10 @@ Needed to be done and was good practice
 
 ---
 
+#Starting with Data
+
 Started by importing the proper package and the data
+
 ```
 library(readxl)
 EchoCardiograms_data_for_R <- read_excel("Echocardiogram_Data/EchoCardiograms data for R.xls", 
@@ -32,7 +38,10 @@ names(EchoC_data)
 The data was fairly clean since I made the csv file myself
 
 ---
-Investigated and manipulated the data further with the Tidyverse package
+
+#Investigated and Manipulation
+
+Using Tidyverse package
 
 ```
 install.packages("tidyverse")
@@ -46,7 +55,10 @@ apply(EchoC_data, 2, function(x) sum(is.na(x)))
 ```
 
 ---
-Goal is to generate plots with this to show data in a digestible fashion
+
+#Generating Plots
+
+Goal is to generate plots to show data in a digestible fashion
 
 ```
 library(ggplot2)
@@ -61,9 +73,12 @@ LV_Sys_Vol
 ```
 
 Liked the layout of violin plot better than the boxplot
+
 - More informative
 
 ---
+
+#Importing Other Data
 
 Have two sets of data I am working with
 
@@ -81,9 +96,13 @@ anyNA(fixed_new_echo)
 
 ---
 
+#Statistics
+
 Need stats on data
-T-Test is all we really need
-- Comaping WT and Mutant
+
+t-test is all we really need
+
+- Comparing WT and Mutant
 
 ```
 ttest <- t.test(PWV ~ Genotype, data=fixed_new_echo)
@@ -100,7 +119,7 @@ Gave test results for all variables
 
 ---
 
-Generate new plots
+#Generate New Plots
 
 ```
 LV_Sys_Vol_Sept <- ggplot(new_echo_r, aes(x = Genotype, y = LV_Vol_s)) + geom_violin() + theme_bw() + 
@@ -111,10 +130,12 @@ LV_Sys_Vol_Sept <- ggplot(new_echo_r, aes(x = Genotype, y = LV_Vol_s)) + geom_vi
   stat_summary(fun.y = mean, geom="point", shape = 18, size  = 3) + 
   stat_summary(fun.y = median,  geom = "point", shape = 3, size = 3, color = "blue")
 LV_Sys_Vol_Sept
- ```
- 
+```
+
 ---
- 
+
+#Final Plots
+
 Mess with plot and generate final version:
 
 ```
@@ -126,9 +147,9 @@ LV_Sys_Vol <- ggplot(EchoC_data, aes(x = Genotype, y = Vol_s)) + geom_violin(sca
   theme(plot.title = element_text(hjust = 0.5)) +
   stat_summary(fun.y = mean, geom="point", shape = 18, size  = 3, color = "red") + 
   stat_summary(fun.y=median,  geom = "point", shape = 3, size = 3, color="blue") 
+
 LV_Sys_Vol
 
-#September:
 LV_Sys_Vol_Sept_2 <- ggplot(new_echo_r, aes(x = Genotype, y = LV_Vol_s)) + geom_violin(scale = "area", adjust = .6) + theme_bw() + 
   geom_point(size = .5, height = 0, width = 0.05) + 
   ylab("Left Ventricular Systolic Volume (uL)") + 
@@ -137,10 +158,20 @@ LV_Sys_Vol_Sept_2 <- ggplot(new_echo_r, aes(x = Genotype, y = LV_Vol_s)) + geom_
   theme(plot.title = element_text(hjust = 0.5)) +
   stat_summary(fun.y = mean, geom="point", shape = 18, size  = 3, color = "red") + 
   stat_summary(fun.y = median,  geom = "point", shape = 3, size = 3, color = "blue")
+
 LV_Sys_Vol_Sept_2
 ```
 
 ---
+
+```{r}
+# All defaults
+include_graphics(img1_path)
+```
+
+---
+
+#Next Steps
 
 Used these generated graphs in a lab meeting with a potential collaborator
 
@@ -148,7 +179,7 @@ Now we're working with them for the next step in our project
 
 ---
 
-Acknowledgements:
+#Acknowledgements
 
 Thank you to Dr. Dasgupta!
 - Helped with troubleshooting and plot generation
@@ -156,4 +187,4 @@ Thank you to Dr. Dasgupta!
 Thank you!
 
 Questions?
----
+

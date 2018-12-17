@@ -329,3 +329,7 @@ PWV_Sept
 summary(PWV_Sept)
 
 ##Make a figure with both june and september on the same figure!!!
+
+
+img1_path <- "my_project/june sys vol.png"
+img2_path <- 'my_project/sept sys vol.png'
