@@ -1,0 +1,77 @@
+---
+title: "Echocardiogram Presentation"
+author: "Jacob Noeker"
+date: "December 18, 2018"
+output: slidy_presentation:
+  theme: spacelab
+  keep_md: true
+---
+
+Generated echocardiography data on the mice we were using
+
+- Knockout vs Wild type
+
+Very small data set
+
+- Easy to work with
+
+Needed to be done and was good practice 
+
+---
+Started by importing the proper package and the data
+```
+library(readxl)
+EchoCardiograms_data_for_R <- read_excel("Echocardiogram_Data/EchoCardiograms data for R.xls", 
+    sheet = "Sheet3")
+View(EchoCardiograms_data_for_R)
+EchoC_data <- EchoCardiograms_data_for_R #Renamed for easier use
+names(EchoC_data)
+```
+The data was fairly clean since I made the csv file myself
+
+---
+Investigated and manipulated the data further with the Tidyverse package
+```
+install.packages("tidyverse")
+library(tidyverse)
+
+EchoC_data %>%
+  select(ID, Genotype, Vol_s, Vol_d, EF, FS, starts_with('Dia'), starts_with('mean'), starts_with('LV'), Peak_grad, Peak_vel, starts_with('Aor'), brach., -starts_with('RV'), -starts_with('PA'))
+
+anyNA(EchoC_data)
+apply(EchoC_data, 2, function(x) sum(is.na(x)))
+```
+---
+Goal is to generate plots with this to show data in a digestible fashion
+```
+library(ggplot2)
+
+ggplot(EchoC_data, aes(x = Genotype, y = Vol_s)) + geom_boxplot()
+
+LV_Sys_Vol <- ggplot(EchoC_data, aes(x = Genotype, y = Vol_s)) + geom_violin() + theme_bw() + ylab("Left Ventricular Systolic Volume (uL)") + 
+  scale_x_discrete(label = c("Wild Type", "Mutant")) + ggtitle("June 2018 Systolic Volume Variation") + theme(plot.title = element_text(hjust = 0.5)) +
+  stat_summary(fun.y = mean, geom="point", shape = 18, size  = 3) + stat_summary(fun.y=median,  geom = "point", shape = 3, size = 3, color="blue") 
+
+LV_Sys_Vol
+```
+Liked the layout of violin plot better than the boxplot
+- More informative
+
+---
+Have two sets of data I am working with
+
+Use same methods to import and fix data for use
+```
+library(readxl)
+edited_new_echo_r <- read_excel("Echocardiogram_Data/edited_new_echo_r.xls", 
+                                sheet = "Sept 2018")
+apply(edited_new_echo_r, 2, function(x) sum(is.na(x)))
+library(tidyverse)
+fixed_new_echo <- new_echo_r %>% drop_na()
+anyNA(fixed_new_echo)
+'''
+
+---
+Need stats on data
+T-Test is all we really need comparing change 
+
