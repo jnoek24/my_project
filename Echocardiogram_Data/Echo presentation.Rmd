@@ -2,9 +2,9 @@
 title: "Echocardiogram Presentation"
 author: "Jacob Noeker"
 date: "December 18, 2018"
-output: slidy_presentation:
-  theme: spacelab
-  keep_md: true
+output:
+  slidy_presentation: default
+  theme: default
 ---
 
 Generated echocardiography data on the mice we were using
@@ -18,6 +18,7 @@ Very small data set
 Needed to be done and was good practice 
 
 ---
+
 Started by importing the proper package and the data
 ```
 library(readxl)
@@ -27,10 +28,12 @@ View(EchoCardiograms_data_for_R)
 EchoC_data <- EchoCardiograms_data_for_R #Renamed for easier use
 names(EchoC_data)
 ```
+
 The data was fairly clean since I made the csv file myself
 
 ---
 Investigated and manipulated the data further with the Tidyverse package
+
 ```
 install.packages("tidyverse")
 library(tidyverse)
@@ -41,8 +44,10 @@ EchoC_data %>%
 anyNA(EchoC_data)
 apply(EchoC_data, 2, function(x) sum(is.na(x)))
 ```
+
 ---
 Goal is to generate plots with this to show data in a digestible fashion
+
 ```
 library(ggplot2)
 
@@ -54,13 +59,16 @@ LV_Sys_Vol <- ggplot(EchoC_data, aes(x = Genotype, y = Vol_s)) + geom_violin() +
 
 LV_Sys_Vol
 ```
+
 Liked the layout of violin plot better than the boxplot
 - More informative
 
 ---
+
 Have two sets of data I am working with
 
 Use same methods to import and fix data for use
+
 ```
 library(readxl)
 edited_new_echo_r <- read_excel("Echocardiogram_Data/edited_new_echo_r.xls", 
@@ -69,9 +77,83 @@ apply(edited_new_echo_r, 2, function(x) sum(is.na(x)))
 library(tidyverse)
 fixed_new_echo <- new_echo_r %>% drop_na()
 anyNA(fixed_new_echo)
-'''
+```
 
 ---
-Need stats on data
-T-Test is all we really need comparing change 
 
+Need stats on data
+T-Test is all we really need
+- Comaping WT and Mutant
+
+```
+ttest <- t.test(PWV ~ Genotype, data=fixed_new_echo)
+ttest$p.value
+```
+
+Decide to go further and run all t-tests at once
+
+```
+lapply(new_echo_r[,3:23], function(x) t.test(x ~ new_echo_r$Genotype, var.equal = TRUE))
+```
+
+Gave test results for all variables
+
+---
+
+Generate new plots
+
+```
+LV_Sys_Vol_Sept <- ggplot(new_echo_r, aes(x = Genotype, y = LV_Vol_s)) + geom_violin() + theme_bw() + 
+  ylab("Left Ventricular Systolic Volume (uL)") + 
+  scale_x_discrete(limits = c("Wild_Type", "Mutant"), label = c("Wild Type", "Mutant")) +
+  ggtitle("September 2018 Systolic Volume Variation") + 
+  theme(plot.title = element_text(hjust = 0.5)) +
+  stat_summary(fun.y = mean, geom="point", shape = 18, size  = 3) + 
+  stat_summary(fun.y = median,  geom = "point", shape = 3, size = 3, color = "blue")
+LV_Sys_Vol_Sept
+ ```
+ 
+---
+ 
+Mess with plot and generate final version:
+
+```
+LV_Sys_Vol <- ggplot(EchoC_data, aes(x = Genotype, y = Vol_s)) + geom_violin(scale = "area", adjust = .6) + theme_bw() + 
+  geom_point(size = .5, height = 0, width = 0.05) + #can use geom_jitter to introduce a small amount of random variation to the location of each point to handle overplott
+  ylab("Left Ventricular Systolic Volume (uL)") + 
+  scale_x_discrete(label = c("Wild Type", "Mutant")) + 
+  ggtitle("June 2018 Systolic Volume Variation") + 
+  theme(plot.title = element_text(hjust = 0.5)) +
+  stat_summary(fun.y = mean, geom="point", shape = 18, size  = 3, color = "red") + 
+  stat_summary(fun.y=median,  geom = "point", shape = 3, size = 3, color="blue") 
+LV_Sys_Vol
+
+#September:
+LV_Sys_Vol_Sept_2 <- ggplot(new_echo_r, aes(x = Genotype, y = LV_Vol_s)) + geom_violin(scale = "area", adjust = .6) + theme_bw() + 
+  geom_point(size = .5, height = 0, width = 0.05) + 
+  ylab("Left Ventricular Systolic Volume (uL)") + 
+  scale_x_discrete(limits = c("Wild_Type", "Mutant"), label = c("Wild Type", "Mutant")) +
+  ggtitle("September 2018 Systolic Volume Variation") + 
+  theme(plot.title = element_text(hjust = 0.5)) +
+  stat_summary(fun.y = mean, geom="point", shape = 18, size  = 3, color = "red") + 
+  stat_summary(fun.y = median,  geom = "point", shape = 3, size = 3, color = "blue")
+LV_Sys_Vol_Sept_2
+```
+
+---
+
+Used these generated graphs in a lab meeting with a potential collaborator
+
+Now we're working with them for the next step in our project
+
+---
+
+Acknowledgements:
+
+Thank you to Dr. Dasgupta!
+- Helped with troubleshooting and plot generation
+
+Thank you!
+
+Questions?
+---

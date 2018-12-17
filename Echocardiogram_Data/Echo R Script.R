@@ -39,13 +39,13 @@ LVOT_PEAK_VEL
 
 #install.packages("readxl")
 library(readxl)
-new_echo_r <- read_excel("Data for R/edited_new_echo_r.xls", 
+edited_new_echo_r <- read_excel("Echocardiogram_Data/edited_new_echo_r.xls", 
                                 sheet = "Sept 2018")
 View(new_echo_r)
 head(new_echo_r)
 anyNA(new_echo_r)
 names(new_echo_r)
-apply(new_echo_r, 2, function(x) sum(is.na(x)))
+apply(edited_new_echo_r, 2, function(x) sum(is.na(x)))
 library(tidyverse)
 fixed_new_echo <- new_echo_r %>% drop_na()
 anyNA(fixed_new_echo)
@@ -53,6 +53,7 @@ ttest <- t.test(PWV ~ Genotype, data=fixed_new_echo)
 ttest$p.value
 lapply(fixed_new_echo[,3:24], function(x) t.test(x ~ fixed_new_echo$Genotype, var.equal = TRUE))
 lapply(new_echo_r[,3:23], function(x) t.test(x ~ new_echo_r$Genotype, var.equal = TRUE))
+lapply(EchoC_data[,3:24], function(x) t.test(x ~ EchoC_data$Genotype, var.equal = TRUE))
 
 LV_Sys_Vol_Sept <- ggplot(new_echo_r, aes(x = Genotype, y = LV_Vol_s)) + geom_violin() + theme_bw() + 
   ylab("Left Ventricular Systolic Volume (uL)") + 
